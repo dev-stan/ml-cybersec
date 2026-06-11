@@ -1,0 +1,5 @@
+# Datasets are not tracked in version control.
+# Download NSL-KDD manually and place files here:
+#   KDDTrain+.txt
+#   KDDTest+.txt
+# Source: https://www.unb.ca/cic/datasets/nsl.html

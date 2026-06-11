@@ -1,56 +1,42 @@
-# Project 1 — NSL-KDD Exploratory Data Analysis
-
-## Overview
-
-This project performs a structured exploratory analysis of the NSL-KDD dataset, a standard benchmark for network intrusion detection research. The dataset contains labeled network connection records across five traffic categories: Normal, DoS, Probe, R2L, and U2R.
-
-The analysis answers 10 specific questions about the dataset before any modeling work begins — understanding the data is a prerequisite to building anything reliable on top of it.
+# Project 1 - NSL-KDD Exploratory Data Analysis
 
 ## Dataset
 
-**NSL-KDD** — an improved version of the original KDD Cup 1999 dataset that removes duplicate records and rebalances class representation.
+**NSL-KDD** - network connection records, each row is one connection with 43 features (protocol type, duration, byte counts, error rates, etc.) plus a label and a difficulty score.
 
-- `KDDTrain+.txt` — 125,973 records
-- `KDDTest+.txt` — 22,544 records
-- 41 features + 1 label column + 1 difficulty score column
+- `data/KDDTrain+.txt` - 125,973 records, 44 columns
+- Labels mapped into 5 categories: Normal, DoS, Probe, R2L, U2R
 
-Place both files in `../data/` before running the notebook.
+## Questions Answered
 
-## 10 Questions Answered
-
-1. What is the class distribution across attack types?
-2. How severe is the class imbalance between Normal and attack traffic?
-3. Which features have the highest variance, and why?
-4. Are there features with near-zero variance that can be dropped?
-5. What does the correlation structure look like across numeric features?
-6. How do attack types differ in their feature profiles?
-7. Are there duplicate or near-duplicate records in the training set?
-8. What is the distribution of protocol types (TCP, UDP, ICMP) across classes?
-9. Which features are most correlated with the attack label?
-10. How does the test set distribution differ from training — is it representative?
+1. What does the dataset look like? (shape, dtypes, basic statistics)
+2. How balanced are the attack categories?
+3. Which specific attack types exist and how many of each?
+4. What types of features does the dataset have? (categorical, binary, numerical)
+5. Are there any missing values?
+6. How do key traffic features differ between normal and attack traffic?
+7. Which protocols are used and how do they relate to attacks?
+8. Which services are most targeted in attacks?
+9. How correlated are the numerical features?
+10. What is the statistical fingerprint of each attack category?
 
 ## Key Findings
 
-- The dataset is heavily skewed toward DoS attacks (~54% of training records); U2R and R2L together account for under 1%.
-- Several features (`num_outbound_cmds`, `is_host_login`) have near-zero variance and are candidates for removal.
-- `src_bytes`, `dst_bytes`, and `count` show strong separation between Normal and attack classes.
-- The test set has a notably different class distribution than training — models that optimize for training accuracy will likely underperform on the test set.
-- TCP dominates as the protocol for most attack categories; ICMP is strongly associated with DoS (smurf) attacks.
-
-## How to Run
-
-```bash
-# From the project root
-cd project-1-eda
-jupyter notebook notebook.ipynb
-```
-
-Requires the NSL-KDD dataset files to be in `../data/`. See the root [README](../README.md) for download instructions.
+- Normal traffic is 53.5% of the dataset; U2R is 0.04% (52 connections) - accuracy is a misleading metric here
+- Neptune alone makes up 32.7% of all connections and 70% of all attacks
+- 3 categorical features, 5 binary, 35 numerical; categorical features need encoding before modeling
+- `src_bytes` ranges from 0 to 1.4 GB - log transform required for visualization
+- No missing values; dataset has been pre-cleaned
+- DoS connections have near-zero bytes and duration with very high connection counts, consistent with SYN flooding
+- TCP dominates attack traffic; ICMP is heavily used for probe (ping sweeps) and DoS (smurf)
+- `private` service and ICMP echo types (`eco_i`, `ecr_i`) dominate the attack service distribution
+- `num_root` ↔ `num_compromised` correlation: 0.998; error rate features are largely redundant with each other
+- U2R feature profile is nearly identical to Normal - it produces no distinct network pattern
 
 ## Files
 
 ```
 project-1-eda/
-├── notebook.ipynb    # Main analysis notebook
-└── README.md         # This file
+├── notebook.ipynb
+└── README.md
 ```

@@ -3,3 +3,6 @@ data/*.csv
 __pycache__/
 .ipynb_checkpoints/
 *.pyc
+learning_style.md
+.vscode/
+.venv/
